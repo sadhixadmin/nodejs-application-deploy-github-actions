@@ -13,13 +13,18 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Deploy Via SSH
+      - name: Deploy via SSH (ROOT)
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.SSH_HOST }}
           username: root
           key: ${{ secrets.SSH_KEY }}
           script: |
+            set -e
+
             cd /opt/nodejs-application-deploy-github-actions
-            git pull
+
+            git pull origin main
+
+            docker compose down
             docker compose up -d --build
